@@ -1,0 +1,25 @@
+{% extends "principal.html" %}
+{% block contenido %}
+<h1>Resultados de Búsqueda</h1>
+
+<p>{{ mensaje_busqueda }}</p>
+
+{% if promociones %}
+    <ul>
+        {% for promocion in promociones %}
+            <li>
+                <strong>{{ promocion.nombre }}</strong><br>
+                descripcion: {{ promocion.descripcion }}<br>
+                Fecha inicio: {{ promocion.fecha_inicio }}<br>
+                Fecha fin: {{ promocion.fecha_fin }}<br>
+                Descuento: {{ promocion.descuento }}<br>
+                Esta activa: {{ promocion.esta_activa }}<br>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No se encontraron promociones con los criterios de búsqueda.</p>
+{% endif %}
+
+<a href="{% url 'promocion_buscar_avanzado' %}" class="btn btn-secondary">Nueva búsqueda</a>
+{% endblock %}
