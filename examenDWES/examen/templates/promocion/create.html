@@ -112,6 +112,26 @@
         </div>
     </div>
 
+    <!-- Campo Esta Activa -->
+    <div class="mb-4">
+        <label for="{{ formulario.esta_activa.id_for_label }}" class="form-label">{{ formulario.esta_activa.label }}: </label>
+        <input name="{{ formulario.esta_activa.html_name }}" 
+            type="checkbox" 
+            class="form-check-input {% if formulario.esta_activa.errors %} is-invalid{% elif formulario.is_bound %} is-valid{% endif %}" 
+            id="{{ formulario.esta_activa.id_for_label }}"
+            {% if formulario.esta_activa.value %} checked {% endif %}>
+        {% if formulario.esta_activa.help_text %}
+        <div class="form-text">
+            {{ formulario.esta_activa.help_text }}
+        </div>
+        {% endif %}
+        <div class="invalid-feedback">
+            {% for error in formulario.esta_activa.errors %}
+                {{ error }}
+            {% endfor %}
+        </div>
+    </div>
+
     <!-- Campo Producto -->
     <div class="mb-4">
         <label for="{{ formulario.producto.id_for_label }}" class="form-label">{{ formulario.producto.label }}: </label>

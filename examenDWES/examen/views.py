@@ -48,40 +48,40 @@ def promocion_buscar_avanzado(request):
             fecha_fin = formulario.cleaned_data.get('fecha_fin')
             producto = formulario.cleaned_data.get('producto')
             esta_activa = formulario.cleaned_data.get('esta_activa')
-            usuarios = formulario.cleaned_data.get('usuario')
+            usuarios = formulario.cleaned_data.get('usuarios')
 
             # Filtro por nombre y descripción
             if nombre_descripcion:
                 QSpromociones = QSpromociones.filter(
                     Q(nombre__icontains=nombre_descripcion) | Q(descripcion__icontains=nombre_descripcion)
                 )
-                mensaje_busqueda += f"Nombre o descripción contienen: "+nombre_descripcion+"\n"
+                mensaje_busqueda += f"Nombre o descripción contienen: {nombre_descripcion}\n"
 
-            #Filtro por rango de descuento
+            # Filtro por descuento
             if descuento:
                 QSpromociones = QSpromociones.filter(descuento__gte=descuento)
-                mensaje_busqueda += f"Descuento mayor o igual a: "+descuento+"\n"
+                mensaje_busqueda += f"Descuento mayor o igual a: {descuento}\n"
 
-            #Filtro por rango de fechas fin
+            # Filtro por rango de fechas
             if fecha_inicio:
                 QSpromociones = QSpromociones.filter(fecha_fin__gte=fecha_inicio)
-                mensaje_busqueda += f"Fecha fin mayor o igual a: "+str(fecha_inicio)+"\n"
+                mensaje_busqueda += f"Fecha fin mayor o igual a: {fecha_inicio}\n"
             if fecha_fin:
                 QSpromociones = QSpromociones.filter(fecha_fin__lte=fecha_fin)
-                mensaje_busqueda += f"Fecha fin menor o igual a: "+str(fecha_fin)+"\n"
+                mensaje_busqueda += f"Fecha fin menor o igual a: {fecha_fin}\n"
 
-            #Filtro por producto
+            # Filtro por producto
             if producto:
                 QSpromociones = QSpromociones.filter(producto=producto)
-                mensaje_busqueda += f"Producto: "+producto.nombre+"\n"
+                mensaje_busqueda += f"Producto: {producto}\n"
 
             # Filtro por usuarios
             if usuarios:
                 QSpromociones = QSpromociones.filter(usuario__in=usuarios)
                 mensaje_busqueda += "Promociones asociadas a los usuarios seleccionados.\n"
 
-            #Filtro por estado activo
-            if esta_activa != '':
+            # Filtro por estado activo
+            if esta_activa:
                 QSpromociones = QSpromociones.filter(esta_activa=bool(esta_activa))
                 mensaje_busqueda += f"Estado: {'Activa' if bool(esta_activa) else 'Inactiva'}\n"
 
@@ -126,7 +126,6 @@ def promocion_eliminar(request, promocion_id):
         promocion.delete()
         messages.success(request, f"Se ha eliminado la promocion '{promocion.titulo}' correctamente.")
     except Exception as error:
-        messages.error(request, "Hubo un error al intentar eliminar la promocion.")
         print(error)
         
     return redirect('listar_promociones')

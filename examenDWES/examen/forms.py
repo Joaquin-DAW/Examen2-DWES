@@ -31,6 +31,7 @@ class PromocionModelForm(ModelForm):
             "fecha_inicio": forms.DateInput(format="%Y-%m-%d", attrs={"type": "date"}),
             "fecha_fin": forms.DateInput(format="%Y-%m-%d", attrs={"type": "date"}),
             "descripcion": forms.Textarea(attrs={"rows": 3, "placeholder": "Añade una breve descripción de la promoción."}),
+            "esta_activa": forms.CheckboxInput(),  # Widget para booleano
         }
         localized_fields = ["fecha_inicio", "fecha_fin"]
         
@@ -45,6 +46,7 @@ class PromocionModelForm(ModelForm):
         descuento = self.cleaned_data.get('descuento')
         fecha_inicio = self.cleaned_data.get('fecha_inicio')
         fecha_fin = self.cleaned_data.get('fecha_fin')
+        esta_activa = self.cleaned_data.get('esta_activa')
  
         #Comprobamos que no exista una promocion con ese nombre y que no sea mayor a 100 caracteres
         if len(nombre) > 100:
@@ -67,12 +69,9 @@ class PromocionModelForm(ModelForm):
             self.add_error('descuento', 'El descuento debe ser un número entre 0 y 10.')
             
         # Validar que la fecha de inicio no sea mayor que la fecha de fin
-        if fecha_inicio and fecha_fin and fecha_inicio > fecha_fin:
+        if fecha_inicio and fecha_fin and fecha_inicio >= fecha_fin:
             self.add_error('fecha_inicio', 'La fecha de inicio debe ser anterior a la fecha de fin.')
-            
-        # Validar que la fecha de fin no sea menor que la fecha de inicio
-        if fecha_fin and fecha_inicio and fecha_inicio < fecha_fin:
-            self.add_error('fecha_inicio', 'La fecha de fin debe ser posterior a la fecha de inicio.')
+
         
         #Siempre devolvemos el conjunto de datos.
         return self.cleaned_data
@@ -80,22 +79,22 @@ class PromocionModelForm(ModelForm):
 
 class BusquedaAvanzadaPromocionForm(forms.Form):
     nombre_descripcion = forms.CharField(
-        required=False, 
-        label="Escriba el nombre o la descripción de una promocion",
-        widget=forms.TextInput(attrs={"placeholder": "Nombre o descripción de la promocion"})
+        required=False,
+        label="Nombre o descripción",
+        widget=forms.TextInput(attrs={"placeholder": "Nombre o descripción de la promoción"})
     )
     descuento = forms.IntegerField(
         required=False,
-        label="Cantidad de descuento",
-        widget=forms.NumberInput(attrs={"placeholder": "Cantidad de descuento"})
+        label="Descuento a buscar",
+        widget=forms.NumberInput(attrs={"placeholder": "Descuento a buscar"})
     )
     fecha_inicio = forms.DateField(
-        label="Fecha Desde",
+        label="Fecha desde",
         required=False,
         widget=forms.DateInput(format="%Y-%m-%d", attrs={"type": "date"})
     )
     fecha_fin = forms.DateField(
-        label="Fecha Hasta",
+        label="Fecha hasta",
         required=False,
         widget=forms.DateInput(format="%Y-%m-%d", attrs={"type": "date"})
     )
@@ -114,26 +113,17 @@ class BusquedaAvanzadaPromocionForm(forms.Form):
             (False, 'Inactiva')
         ]
     )
+    usuarios = forms.ModelMultipleChoiceField(
+        queryset=Usuario.objects.all(),
+        required=False,
+        label="Usuarios",
+        widget=forms.SelectMultiple(attrs={"placeholder": "Seleccione uno o más usuarios"})
+    )
 
     def clean(self):
         super().clean()
-        nombre = self.cleaned_data.get('nombre')
-        descripcion = self.cleaned_data.get('descripcion')
-        descuento_min = self.cleaned_data.get('descuento_min')
-        descuento_max = self.cleaned_data.get('descuento_max')
-        fecha_inicio = self.cleaned_data.get('fecha_desde')
-        fecha_fin = self.cleaned_data.get('fecha_hasta')
-        producto = self.cleaned_data.get('producto')
-        esta_activa = self.cleaned_data.get('esta_activa')
-
-        # Validación: al menos un campo debe estar lleno
-        if not any([nombre, descripcion, descuento_min, descuento_max, fecha_inicio, fecha_fin, producto, esta_activa]):
-            raise forms.ValidationError("Debe llenar al menos un campo del formulario para realizar la búsqueda avanzada.")
-
-        # Validación: descuento_max no puede ser menor que descuento_min
-        if descuento_min is not None and descuento_max is not None and descuento_max < descuento_min:
-            self.add_error('descuento_min', "El descuento máximo no puede ser menor que el descuento mínimo.")
-            self.add_error('descuento_max', "El descuento máximo no puede ser menor que el descuento mínimo.")
+        fecha_inicio = self.cleaned_data.get('fecha_inicio')
+        fecha_fin = self.cleaned_data.get('fecha_fin')
 
         # Validación: fecha_fin no puede ser menor que fecha_inicio
         if fecha_inicio and fecha_fin and fecha_fin < fecha_inicio:
@@ -141,5 +131,3 @@ class BusquedaAvanzadaPromocionForm(forms.Form):
             self.add_error('fecha_fin', "La fecha fin no puede ser menor que la fecha inicio.")
 
         return self.cleaned_data
-
-    

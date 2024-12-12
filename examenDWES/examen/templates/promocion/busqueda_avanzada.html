@@ -11,6 +11,10 @@
     </div>
 
     <div class="mb-4">
+        {% bootstrap_field formulario.descuento show_label=True %}
+    </div>
+
+    <div class="mb-4">
         {% bootstrap_field formulario.fecha_inicio show_label=True %}
     </div>
 
@@ -20,6 +24,14 @@
 
     <div class="mb-4">
         {% bootstrap_field formulario.producto show_label=True %}
+    </div>
+
+    <div class="mb-4">
+        {% bootstrap_field formulario.usuarios show_label=True %}
+    </div>
+
+    <div class="mb-4">
+        {% bootstrap_field formulario.esta_activa show_label=True %}
     </div>
 
     {% bootstrap_button "Buscar" button_type="submit" button_class="btn-primary" %}
