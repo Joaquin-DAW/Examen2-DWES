@@ -1,0 +1,147 @@
+{% extends "principal.html" %}
+
+{% block contenido %}
+
+{% load django_bootstrap5 %}
+
+<form action="{% url 'promocion_create' %}" method="post">
+
+    {% csrf_token %}
+
+    <!-- Campo Nombre -->
+    <div class="mb-4">
+        <label for="{{ formulario.nombre.id_for_label }}" class="form-label">{{ formulario.nombre.label }}: </label>
+        <input name="{{ formulario.nombre.html_name }}" 
+               type="text" 
+               class="form-control {% if formulario.nombre.errors %} is-invalid{% elif formulario.is_bound %} is-valid{% endif %}" 
+               id="{{ formulario.nombre.id_for_label }}"
+               maxlength="{{ formulario.nombre.field.max_length }}"
+               {% if formulario.nombre.field.required %} required {% endif %}
+               value="{% if formulario.is_bound %}{{ formulario.nombre.value }}{% endif %}" 
+        />
+        {% if formulario.nombre.help_text %}
+        <div class="form-text">
+            {{ formulario.nombre.help_text }}
+        </div>
+        {% endif %}
+        <div class="invalid-feedback">
+            {% for error in formulario.nombre.errors %}
+                {{ error }}
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Campo Descripción -->
+        <div class="mb-4">
+            <label for="{{ formulario.descripcion.id_for_label }}" class="form-label">{{ formulario.descripcion.label }}: </label>
+            <textarea name="{{ formulario.descripcion.html_name }}" 
+                      class="form-control {% if formulario.descripcion.errors %} is-invalid{% elif formulario.is_bound %} is-valid{% endif %}" 
+                      id="{{ formulario.descripcion.id_for_label }}">{{ formulario.descripcion.value }}</textarea>
+            {% if formulario.descripcion.help_text %}
+            <div class="form-text">
+                {{ formulario.descripcion.help_text }}
+            </div>
+            {% endif %}
+            <div class="invalid-feedback">
+                {% for error in formulario.descripcion.errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+        </div>
+
+    <!-- Campo Descuento -->
+    <div class="mb-4">
+        <label for="{{ formulario.descuento.id_for_label }}" class="form-label">{{ formulario.descuento.label }}: </label>
+        <input name="{{ formulario.descuento.html_name }}" 
+               type="number" 
+               class="form-control {% if formulario.descuento.errors %} is-invalid{% elif formulario.is_bound %} is-valid{% endif %}" 
+               id="{{ formulario.descuento.id_for_label }}"
+               value="{% if formulario.is_bound %}{{ formulario.descuento.value }}{% endif %}" 
+        />
+        {% if formulario.descuento.help_text %}
+        <div class="form-text">
+            {{ formulario.descuento.help_text }}
+        </div>
+        {% endif %}
+        <div class="invalid-feedback">
+            {% for error in formulario.descuento.errors %}
+                {{ error }}
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Campo Fecha de Inicio -->
+    <div class="mb-4">
+        <label for="{{ formulario.fecha_inicio.id_for_label }}" class="form-label">{{ formulario.fecha_inicio.label }}: </label>
+        <input name="{{ formulario.fecha_inicio.html_name }}" 
+               type="date" 
+               class="form-control {% if formulario.fecha_inicio.errors %} is-invalid{% elif formulario.is_bound %} is-valid{% endif %}" 
+               id="{{ formulario.fecha_inicio.id_for_label }}"
+               value="{% if formulario.is_bound %}{{ formulario.fecha_inicio.value|stringformat:'Y-m-d' }}{% endif %}" 
+        />
+        {% if formulario.fecha_inicio.help_text %}
+        <div class="form-text">
+            {{ formulario.fecha_inicio.help_text }}
+        </div>
+        {% endif %}
+        <div class="invalid-feedback">
+            {% for error in formulario.fecha_inicio.errors %}
+                {{ error }}
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Campo Fecha de Fin -->
+    <div class="mb-4">
+        <label for="{{ formulario.fecha_fin.id_for_label }}" class="form-label">{{ formulario.fecha_fin.label }}: </label>
+        <input name="{{ formulario.fecha_fin.html_name }}" 
+               type="date" 
+               class="form-control {% if formulario.fecha_fin.errors %} is-invalid{% elif formulario.is_bound %} is-valid{% endif %}" 
+               id="{{ formulario.fecha_fin.id_for_label }}"
+               value="{% if formulario.is_bound %}{{ formulario.fecha_fin.value|stringformat:'Y-m-d' }}{% endif %}" 
+        />
+        {% if formulario.fecha_fin.help_text %}
+        <div class="form-text">
+            {{ formulario.fecha_fin.help_text }}
+        </div>
+        {% endif %}
+        <div class="invalid-feedback">
+            {% for error in formulario.fecha_fin.errors %}
+                {{ error }}
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Campo Producto -->
+    <div class="mb-4">
+        <label for="{{ formulario.producto.id_for_label }}" class="form-label">{{ formulario.producto.label }}: </label>
+        <select name="{{ formulario.producto.html_name }}" 
+                class="form-select {% if formulario.producto.errors %} is-invalid{% elif formulario.is_bound %} is-valid{% endif %}" 
+                id="{{ formulario.producto.id_for_label }}">
+            <option value="">Seleccione un producto</option>
+            {% for choice in formulario.producto.field.choices %}
+                <option value="{{ choice.0 }}" {% if formulario.producto.value == choice.0 %} selected {% endif %}>
+                    {{ choice.1 }}
+                </option>
+            {% endfor %}
+        </select>
+        {% if formulario.producto.help_text %}
+        <div class="form-text">
+            {{ formulario.producto.help_text }}
+        </div>
+        {% endif %}
+        <div class="invalid-feedback">
+            {% for error in formulario.producto.errors %}
+                {{ error }}
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Botón Enviar -->
+    <div class="mb-4">
+        <button type="submit" class="btn btn-primary">Crear Promocion</button>
+    </div>
+
+</form>
+
+{% endblock %}

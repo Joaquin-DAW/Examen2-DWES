@@ -1,0 +1,64 @@
+<div class="card mb-3">
+    <div class="card-body">
+        <h5 class="card-title">{{ promocion.nombre|capfirst }}</h5>
+        <h6 class="card-subtitle mb-2 text-muted">Fecha inicio: {{ promocion.fecha_inicio|date:"d/m/Y" }}</h6>
+        <h6 class="card-subtitle mb-2 text-muted">
+            Fecha fin: {{ promocion.fecha_fin|default:"Indefinida" }}
+        </h6>
+        <p class="card-text"><strong>Descripción:</strong> {{ promocion.descripcion|default:"Sin descripción" }}</p>
+        <p class="card-text"><strong>Descuento aplicado:</strong> {{ promocion.descuento }}%</p>
+        <p class="card-text"><strong>Estado:</strong> 
+            {% if promocion.esta_activa %}
+                <span class="badge bg-success">Activa</span>
+            {% else %}
+                <span class="badge bg-secondary">Inactiva</span>
+            {% endif %}
+        </p>
+        <p class="card-text"><strong>Producto:</strong> {{ promocion.producto.nombre }}</p>
+        <div>
+            <p class="card-text"><strong>Usuarios a los que se le aplica la promoción:</strong></p>
+            <ul>
+                {% for usuario in promocion.usuario.all %}
+                    <li>{{ usuario.nombre }} (Edad: {{ usuario.edad }})</li>
+                {% empty %}
+                    <li>No hay usuarios asociados a esta promoción.</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% load bootstrap_icons %}
+        <div class="row btn-group mt-3">
+            <div class="mb-2">
+                <button type="button" class="btn btn-outline-primary">
+                    <a href="{% url 'promocion_editar' promocion.id %}">
+                        <span>{% bs_icon 'pencil' %} </span>
+                    </a>
+                </button>
+            </div>
+            <div class="mb-2">
+                <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal-{{ promocion.id }}">
+                    <span>{% bs_icon 'trash' %} </span>
+                </button>
+            </div>
+        </div>
+        <div class="modal fade" id="confirmDeleteModal-{{ promocion.id }}" tabindex="-1" aria-labelledby="confirmDeleteModalLabel-{{ promocion.id }}" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="confirmDeleteModalLabel-{{ promocion.id }}">Confirmar eliminación</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body">
+                        ¿Estás seguro de que deseas eliminar la promoción "{{ promocion.nombre }}"? Esta acción no se puede deshacer.
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <form method="post" action="{% url 'promocion_eliminar' promocion.id %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Eliminar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

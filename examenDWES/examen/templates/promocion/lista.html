@@ -1,0 +1,14 @@
+{% extends 'principal.html' %}
+{% load django_bootstrap5 %}
+
+{% block cabecera %}
+  <h1>Lista de Promociones</h1>
+{% endblock %}
+
+{% block contenido %}
+  {% for promocion in promociones %}
+    {% include 'promocion/_promocion.html' %}
+  {% empty %}
+    <h2>No hay promociones creadas aún.</h2>
+  {% endfor %}
+{% endblock %}
